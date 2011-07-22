@@ -1,0 +1,308 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0499E4E0135E0CE70002C36B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0499E4DF135E0CE70002C36B /* Cocoa.framework */; };
+		0499E4EA135E0CE70002C36B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0499E4E8135E0CE70002C36B /* InfoPlist.strings */; };
+		0499E4ED135E0CE70002C36B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0499E4EC135E0CE70002C36B /* main.m */; };
+		0499E4F0135E0CE70002C36B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0499E4EE135E0CE70002C36B /* Credits.rtf */; };
+		0499E4F3135E0CE70002C36B /* QuartzBookAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0499E4F2135E0CE70002C36B /* QuartzBookAppDelegate.m */; };
+		0499E4F6135E0CE70002C36B /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0499E4F4135E0CE70002C36B /* MainMenu.xib */; };
+		0499E4FE135E0D5C0002C36B /* MyView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0499E4FD135E0D5C0002C36B /* MyView.m */; };
+		0499E503135E11F50002C36B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0499E502135E11F50002C36B /* QuartzCore.framework */; };
+		0499E506135E14EE0002C36B /* Drawings.c in Sources */ = {isa = PBXBuildFile; fileRef = 0499E504135E14EE0002C36B /* Drawings.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0499E4DB135E0CE70002C36B /* QuartzBook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuartzBook.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0499E4DF135E0CE70002C36B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		0499E4E2135E0CE70002C36B /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		0499E4E3135E0CE70002C36B /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		0499E4E4135E0CE70002C36B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		0499E4E7135E0CE70002C36B /* QuartzBook-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "QuartzBook-Info.plist"; sourceTree = "<group>"; };
+		0499E4E9135E0CE70002C36B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		0499E4EB135E0CE70002C36B /* QuartzBook-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "QuartzBook-Prefix.pch"; sourceTree = "<group>"; };
+		0499E4EC135E0CE70002C36B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		0499E4EF135E0CE70002C36B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		0499E4F1135E0CE70002C36B /* QuartzBookAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QuartzBookAppDelegate.h; sourceTree = "<group>"; };
+		0499E4F2135E0CE70002C36B /* QuartzBookAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QuartzBookAppDelegate.m; sourceTree = "<group>"; };
+		0499E4F5135E0CE70002C36B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		0499E4FC135E0D5C0002C36B /* MyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyView.h; sourceTree = "<group>"; };
+		0499E4FD135E0D5C0002C36B /* MyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyView.m; sourceTree = "<group>"; };
+		0499E502135E11F50002C36B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		0499E504135E14EE0002C36B /* Drawings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Drawings.c; sourceTree = "<group>"; };
+		0499E505135E14EE0002C36B /* Drawings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Drawings.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0499E4D8135E0CE70002C36B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0499E4E0135E0CE70002C36B /* Cocoa.framework in Frameworks */,
+				0499E503135E11F50002C36B /* QuartzCore.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0499E4D0135E0CE60002C36B = {
+			isa = PBXGroup;
+			children = (
+				0499E4E5135E0CE70002C36B /* QuartzBook */,
+				0499E4DE135E0CE70002C36B /* Frameworks */,
+				0499E4DC135E0CE70002C36B /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		0499E4DC135E0CE70002C36B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0499E4DB135E0CE70002C36B /* QuartzBook.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0499E4DE135E0CE70002C36B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0499E4DF135E0CE70002C36B /* Cocoa.framework */,
+				0499E4E1135E0CE70002C36B /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		0499E4E1135E0CE70002C36B /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0499E502135E11F50002C36B /* QuartzCore.framework */,
+				0499E4E2135E0CE70002C36B /* AppKit.framework */,
+				0499E4E3135E0CE70002C36B /* CoreData.framework */,
+				0499E4E4135E0CE70002C36B /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		0499E4E5135E0CE70002C36B /* QuartzBook */ = {
+			isa = PBXGroup;
+			children = (
+				0499E4F1135E0CE70002C36B /* QuartzBookAppDelegate.h */,
+				0499E4F2135E0CE70002C36B /* QuartzBookAppDelegate.m */,
+				0499E4FC135E0D5C0002C36B /* MyView.h */,
+				0499E4FD135E0D5C0002C36B /* MyView.m */,
+				0499E505135E14EE0002C36B /* Drawings.h */,
+				0499E504135E14EE0002C36B /* Drawings.c */,
+				0499E4F4135E0CE70002C36B /* MainMenu.xib */,
+				0499E4E6135E0CE70002C36B /* Supporting Files */,
+			);
+			path = QuartzBook;
+			sourceTree = "<group>";
+		};
+		0499E4E6135E0CE70002C36B /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				0499E4E7135E0CE70002C36B /* QuartzBook-Info.plist */,
+				0499E4E8135E0CE70002C36B /* InfoPlist.strings */,
+				0499E4EB135E0CE70002C36B /* QuartzBook-Prefix.pch */,
+				0499E4EC135E0CE70002C36B /* main.m */,
+				0499E4EE135E0CE70002C36B /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0499E4DA135E0CE70002C36B /* QuartzBook */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0499E4F9135E0CE70002C36B /* Build configuration list for PBXNativeTarget "QuartzBook" */;
+			buildPhases = (
+				0499E4D7135E0CE70002C36B /* Sources */,
+				0499E4D8135E0CE70002C36B /* Frameworks */,
+				0499E4D9135E0CE70002C36B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = QuartzBook;
+			productName = QuartzBook;
+			productReference = 0499E4DB135E0CE70002C36B /* QuartzBook.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0499E4D2135E0CE60002C36B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+				ORGANIZATIONNAME = MapApp;
+			};
+			buildConfigurationList = 0499E4D5135E0CE60002C36B /* Build configuration list for PBXProject "QuartzBook" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 0499E4D0135E0CE60002C36B;
+			productRefGroup = 0499E4DC135E0CE70002C36B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0499E4DA135E0CE70002C36B /* QuartzBook */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0499E4D9135E0CE70002C36B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0499E4EA135E0CE70002C36B /* InfoPlist.strings in Resources */,
+				0499E4F0135E0CE70002C36B /* Credits.rtf in Resources */,
+				0499E4F6135E0CE70002C36B /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0499E4D7135E0CE70002C36B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0499E4ED135E0CE70002C36B /* main.m in Sources */,
+				0499E4F3135E0CE70002C36B /* QuartzBookAppDelegate.m in Sources */,
+				0499E4FE135E0D5C0002C36B /* MyView.m in Sources */,
+				0499E506135E14EE0002C36B /* Drawings.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		0499E4E8135E0CE70002C36B /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0499E4E9135E0CE70002C36B /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		0499E4EE135E0CE70002C36B /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0499E4EF135E0CE70002C36B /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		0499E4F4135E0CE70002C36B /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0499E4F5135E0CE70002C36B /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		0499E4F7135E0CE70002C36B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		0499E4F8135E0CE70002C36B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		0499E4FA135E0CE70002C36B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "QuartzBook/QuartzBook-Prefix.pch";
+				INFOPLIST_FILE = "QuartzBook/QuartzBook-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		0499E4FB135E0CE70002C36B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "QuartzBook/QuartzBook-Prefix.pch";
+				INFOPLIST_FILE = "QuartzBook/QuartzBook-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0499E4D5135E0CE60002C36B /* Build configuration list for PBXProject "QuartzBook" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0499E4F7135E0CE70002C36B /* Debug */,
+				0499E4F8135E0CE70002C36B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0499E4F9135E0CE70002C36B /* Build configuration list for PBXNativeTarget "QuartzBook" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0499E4FA135E0CE70002C36B /* Debug */,
+				0499E4FB135E0CE70002C36B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0499E4D2135E0CE60002C36B /* Project object */;
+}
