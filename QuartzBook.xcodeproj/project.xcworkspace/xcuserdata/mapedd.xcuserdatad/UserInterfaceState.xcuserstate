@@ -1294,7 +1294,7 @@
     s = 0;
 }</string>
 		</dict>
-		<real>333486171.04180002</real>
+		<real>333486252.67595899</real>
 		<string>{40670, 1392}</string>
 		<string>{42041, 0}</string>
 		<string>myCGDataConsumerCreateWithCFData()</string>
@@ -2190,7 +2190,7 @@
 				</dict>
 				<dict>
 					<key>CF$UID</key>
-					<integer>205</integer>
+					<integer>203</integer>
 				</dict>
 				<dict>
 					<key>CF$UID</key>
@@ -4718,7 +4718,7 @@
     s = 0;
 }</string>
 		</dict>
-		<real>333486171.03766799</real>
+		<real>333486252.67255503</real>
 		<string>{40670, 1392}</string>
 		<string>{42041, 0}</string>
 		<dict>
