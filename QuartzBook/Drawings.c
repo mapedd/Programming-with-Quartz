@@ -966,3 +966,156 @@ CGDataProviderRef createSequentialAccessDPForURL(CFURLRef url){
     
     
 }
+
+//8.4
+
+static size_t getBytesGrayRampDirectAccess(void *info, void *buffer, size_t offset, size_t count){
+    unsigned char *p = buffer;
+    int i;
+    
+    // This data provider privides 256 bytes total. If Quartz requests more data than available, return only available data.
+    if (offset+count > 256) 
+        count = 256-offset;
+    for (i=offset; i<(offset+count); i++) {
+        *p++=i;
+    }
+    return count;
+}
+
+CGDataProviderRef createGrayRampDirectAccessDP(void){
+    CGDataProviderRef provider = NULL;
+    CGDataProviderDirectCallbacks callbacks;
+    callbacks.getBytesAtPosition = getBytesGrayRampDirectAccess;
+    callbacks.getBytePointer = NULL;
+    callbacks.releaseBytePointer = NULL;
+
+    provider = CGDataProviderCreateDirect(NULL, 256, &callbacks);
+    if (provider == NULL) {
+        fprintf(stderr, "couldn't create data provider!\n");
+    }
+    return provider;
+    
+}
+
+//8.5
+
+static void myCFDataRelease(void *info, const void *data, size_t size){
+    // Only called on systems where CGDataProviderCreateWithCFData is not available
+    if (info) {
+        CFRelease(info);
+    }
+}
+
+CGDataProviderRef myCGDataProviderCreateWithCFData(CFDataRef data){
+    CGDataProviderRef provider = NULL;
+    // If the CFData object passed in is NULL, this code returns a NULL data provider.
+    if (data == NULL) {
+        return NULL;
+    }
+    
+    // Test to see if the Quartz version is available and if so, use it.
+    if (&CGDataProviderCreateWithCFData != NULL) {
+        return CGDataProviderCreateWithCFData(data);
+    }
+    
+    if (provider == NULL) {
+        size_t dataSize = CFDataGetLength(data);
+        const UInt8 *dataPtr = CFDataGetBytePtr(data);
+        // Retain the data so that this code owns the reference.
+        CFRetain(data);
+        provider = CGDataProviderCreateWithData((void*)data, dataPtr, dataSize, myCFDataRelease);
+        if (provider == NULL) {
+            // Release the data if for some reason the data provider couldn't be created.
+            CFRelease(data);
+        }
+    }
+}
+
+//8.6
+
+CGDataConsumerRef createDataConsumerFromPathName(CFStringRef path){
+    CFURLRef url;
+    
+    // Create a CFURL for the supplied file system path.
+    url = CFURLCreateWithFileSystemPath(NULL, path, kCFURLPOSIXPathStyle, false);
+    if (url == NULL) {
+        fprintf(stderr, "Couldn't create url !\n");
+    }
+    
+    // Create a Quartz data provider for the URL.
+    CGDataConsumerRef dataConsumer = CGDataConsumerCreateWithURL(url);
+    // Release the URL when code is done with it.
+    CFRelease(url);
+    if (dataConsumer == NULL) {
+        fprintf(stderr, "Couldn't create data consumer!\n");
+        return NULL;
+    }
+    
+    return dataConsumer;
+}
+
+
+
+//8.7
+
+size_t myCFDataConsumerPutBytes(void *info, const void* buffer, size_t count){
+    CFMutableDataRef data = (CFMutableDataRef)info;
+    // Append 'count' bytes from 'buffer' to the CFData object 'data'
+    CFDataAppendBytes(data, buffer, count);
+    return count;
+}
+
+void myCFDataConsumerRelease(void *info){
+    if (info!=NULL) {
+        CFRelease((CFDataRef)info);
+    }
+}
+
+CGDataConsumerRef myCGDataConsumerCreateWithCFData(CFMutableDataRef data){
+    CGDataConsumerRef consumer = NULL;
+    // If the CFData object passed in is NULL, this code returns a NULL data consumer
+    if (data == NULL) {
+        return NULL;
+    }
+    
+    // Test to see if the Quartz version is available
+    if (&CGDataConsumerCreateWithCFData != NULL) {
+        return CGDataConsumerCreateWithCFData(data);
+    }
+    
+    if (consumer == NULL) {
+        CGDataConsumerCallbacks callbacks;
+        callbacks.putBytes = myCFDataConsumerPutBytes;
+        callbacks.releaseConsumer = myCFDataConsumerRelease;
+        
+        // Retain the data so that this code owns
+        CFRetain(data);
+        consumer = CGDataConsumerCreate(data, &callbacks);
+        if (consumer == NULL) {
+            //Release the data if for some reason the data consumer couldn't be created.
+            CFRelease(data);
+        }
+        
+    }
+    
+    return consumer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

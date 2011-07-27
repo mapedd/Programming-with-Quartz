@@ -125,4 +125,28 @@ static void releaseSequentialAccessDP(void *data);
 
 CGDataProviderRef createSequentialAccessDPForURL(CFURLRef url);
 
+//8.4
 
+static size_t getBytesGrayRampDirectAccess(void *info, void *buffer, size_t offset, size_t count);
+
+CGDataProviderRef createGrayRampDirectAccessDP(void);
+
+//8.5
+
+static void myCFDataRelease(void *info, const void *data, size_t size);
+
+CGDataProviderRef myCGDataProviderCreateWithCFData(CFDataRef data);
+
+// MallocDebug!
+
+//8.6
+
+CGDataConsumerRef createDataConsumerFromPathName(CFStringRef path);
+
+//8.7
+
+size_t myCFDataConsumerPutBytes(void *info, const void* buffer, size_t count);
+
+void myCFDataConsumerRelease(void *info);
+
+CGDataConsumerRef myCGDataConsumerCreateWithCFData(CFMutableDataRef data);
