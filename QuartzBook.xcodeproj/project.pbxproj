@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0433E9D313FBFD6100024AE3 /* skiing.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0433E9D213FBFD6100024AE3 /* skiing.jpg */; };
 		0499E4E0135E0CE70002C36B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0499E4DF135E0CE70002C36B /* Cocoa.framework */; };
 		0499E4EA135E0CE70002C36B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0499E4E8135E0CE70002C36B /* InfoPlist.strings */; };
 		0499E4ED135E0CE70002C36B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0499E4EC135E0CE70002C36B /* main.m */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0433E9D213FBFD6100024AE3 /* skiing.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = skiing.jpg; sourceTree = "<group>"; };
 		0499E4DB135E0CE70002C36B /* QuartzBook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuartzBook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0499E4DF135E0CE70002C36B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		0499E4E2135E0CE70002C36B /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -107,6 +109,7 @@
 		0499E4E6135E0CE70002C36B /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				0433E9D213FBFD6100024AE3 /* skiing.jpg */,
 				0499E4E7135E0CE70002C36B /* QuartzBook-Info.plist */,
 				0499E4E8135E0CE70002C36B /* InfoPlist.strings */,
 				0499E4EB135E0CE70002C36B /* QuartzBook-Prefix.pch */,
@@ -170,6 +173,7 @@
 				0499E4EA135E0CE70002C36B /* InfoPlist.strings in Resources */,
 				0499E4F0135E0CE70002C36B /* Credits.rtf in Resources */,
 				0499E4F6135E0CE70002C36B /* MainMenu.xib in Resources */,
+				0433E9D313FBFD6100024AE3 /* skiing.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

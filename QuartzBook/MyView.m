@@ -30,9 +30,29 @@
     NSGraphicsContext *currentContext = [NSGraphicsContext currentContext];
     CGContextRef context = (CGContextRef)[currentContext graphicsPort]; 
 
-    doClippedEllipse(context);
+    
+    doColorRampImage(context);
+
+    
+    
 }
 
+void drawSampleJPEGImage(CGContextRef ctx){
+    NSBundle *mainBundle = [NSBundle mainBundle];
+    
+    NSString *path = [mainBundle pathForImageResource:@"skiing.jpg"];
+    
+    CFURLRef url = NULL;
+    
+    url =  (CFURLRef) [[NSURL alloc] initFileURLWithPath:path];
+    
+    if (url == NULL) {
+        fprintf(stderr, "Couldn't create CFURLRef for JPEG data !\n");
+        return;
+    }
+    
+    drawJPEGImage(ctx, url);
+}
 
 
 

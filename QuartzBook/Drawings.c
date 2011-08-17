@@ -1102,17 +1102,178 @@ CGDataConsumerRef myCGDataConsumerCreateWithCFData(CFMutableDataRef data){
 }
 
 
+//9.1
+void drawJPEGImage(CGContextRef ctx, CFURLRef url){
+    CGRect jpgRect;
+    
+    CGImageRef jpgImage = NULL;
+    // Create a Quartz data provider for the supplied URL.
+    CGDataProviderRef jpgProvider = CGDataProviderCreateWithURL(url);
+    if (jpgProvider == NULL) {
+        fprintf(stderr, "Couldn't create JPEG Data provider !\n");
+        return;
+    }
+    
+    // Create the CGImageRef for the JPEG image from the data provider.
+    jpgImage = CGImageCreateWithJPEGDataProvider(jpgProvider,
+                                                 NULL,
+                                                 true,
+                                                 kCGRenderingIntentDefault);
+    // CGImageCreateWithJPEGDataProvider retains the data provider.
+    // Since this code created the data provider and this code no longer needs it, the code must release it.
+    CGDataProviderRelease(jpgProvider);
+    if (jpgImage == NULL) {
+        fprintf(stderr, "Couldn't create CGImageRef for JPEG data !\n");
+        return;
+    }
+    
+    // Make a rectanglethat has it's orogin at (0,0) and has a width and the height
+    // that is 1/4 the native width and height of the image
+    jpgRect = CGRectMake(0., 0., CGImageGetWidth(jpgImage)/4, CGImageGetHeight(jpgImage)/4);
+    
+    // Draw the image into the rectangle 
+    // This is image 1
+    CGContextDrawImage(ctx, jpgRect, jpgImage);
+    CGContextSaveGState(ctx);
+        // Translate to the top-right corner of the image just drawn.
+        CGContextTranslateCTM(ctx, jpgRect.size.width, jpgRect.size.height);
+        // Rotate by -90 degrees
+        CGContextRotateCTM(ctx, DEGREES_TO_RADIANS(-90.0f));
+        // Translate in -x by the width of the drawing.
+        CGContextTranslateCTM(ctx, -jpgRect.size.width, 0.);
+        // Draw the image into the same rectangle as before.
+        // This is image 2
+        CGContextDrawImage(ctx, jpgRect, jpgImage);
+    CGContextRestoreGState(ctx);
+    CGContextSaveGState(ctx);
+        // Translate so that the next drawing of the image appears below and to the right of the image just drawn.
+        CGContextTranslateCTM(ctx, jpgRect.size.width+jpgRect.size.height, jpgRect.size.height);
+        // Scale the y axis by the negative value to flip the image.
+        CGContextScaleCTM(ctx, 0.75, -1.0);
+        // This is image 3
+        CGContextDrawImage(ctx, jpgRect, jpgImage);
+    CGContextRestoreGState(ctx);
+    
+    // Adjust the position of the rectangle so that its origin is 
+    // to the right and above where Image 3 was drawn. 
+    // Adjust the size of the rectangle so that it is 1/4 the image width and 1/6 the image height
+    jpgRect = CGRectMake(1.75*jpgRect.size.width+jpgRect.size.height,
+                         jpgRect.size.height, 
+                         CGImageGetWidth(jpgImage)/4,
+                         CGImageGetHeight(jpgImage)/6);
+    // This is image 4
+    CGContextDrawImage(ctx, jpgRect, jpgImage);
+    
+    // Release the CGImageRef when is is no longer needed.
+    CGImageRelease(jpgImage);
+}
 
 
 
+//9.2
+void drawImageFromURL(CGContextRef ctx, CFURLRef url, size_t width, size_t height, size_t bitsPerComponent, Boolean isRGB){
+    CGImageRef image = NULL;
+    CGRect imageRect;
+    
+    size_t bitsPerPixel = isRGB ? (bitsPerComponent * 3) : bitsPerComponent;
+    size_t bytesPerRow = (width *bitsPerPixel +7)/8;
+    bool shouldInterpolate = true;
+    CGColorSpaceRef colorspace = NULL;
+    // Create a Quartz data provider from the supplied URL.
+    CGDataProviderRef dataProvider =  CGDataProviderCreateWithURL(url);
+    if (dataProvider == NULL) {
+        fprintf(stderr, "Couldn't create Image data provider! \n");
+        return;
+    }
+    // Get a Quartz color space object appropriate for the image type.
+    // Book version
+    // colorspace = isRGB ? getTheCalibreatedRGBColorSpace() : getTheCalibreatedGrayColorSpace();
+    // Working version
+    colorspace = isRGB ? CGColorSpaceCreateDeviceRGB() : CGColorSpaceCreateDeviceGray();
+    
+    // Create an image of the width, height, and bitsPerComponent with no alpha data, 
+    // the default decode array, with interpolation and the deafult rendering intent for images
+    image = CGImageCreate(width,
+                          height,
+                          bitsPerComponent, 
+                          bitsPerPixel,
+                          bytesPerRow,
+                          colorspace,
+                          kCGImageAlphaNone,
+                          dataProvider,
+                          NULL,
+                          shouldInterpolate,
+                          kCGRenderingIntentDefault);
+    // Quartz reteins the data provider with image and sinse this code does not create any more image with 
+    // the data provider, it relases it
+    CGDataProviderRelease(dataProvider);
+    if (image == NULL) {
+        fprintf(stderr, "Couldn't create CGImageRef for this data! \n");
+        return;
+    }
+    // Create a rectangle into which the code will draw the image.
+    imageRect = CGRectMake(0., 0., width, height);
+    
+    // Draw the image into the rectangle.
+    CGContextDrawImage(ctx, imageRect, image);
+    // Release the CGImage ibject when it is no longer needed.
+    CGImageRelease(image);
+}
 
 
 
+void doColorRampImage(CGContextRef ctx){
+    CGImageRef image = NULL;
+    CGRect imageRect;
+    
+    size_t width = 256, height = 256;
+    size_t bitsPerComponent = 8, bitsPerPixel = 24;
+    size_t bytesPerRow = width * 3;
+    bool shouldInterpolate = true;
+    CGColorSpaceRef colorspace = NULL;
+    
+    CGDataProviderRef imageDataProvider = createRGBRampDataProvider();
+    if (imageDataProvider == NULL) {
+        fprintf(stderr, "Couldn't create Image data provider! \n");
+        return;
+    }
+    
+    colorspace = getCalibratedRGBColorSpace();
+    image = CGImageCreate(width,
+                          height,
+                          bitsPerComponent,
+                          bitsPerPixel,
+                          bytesPerRow,
+                          colorspace,
+                          kCGImageAlphaNone,
+                          imageDataProvider,
+                          NULL,
+                          shouldInterpolate,
+                          kCGRenderingIntentDefault);
+    // No longer need the data provider
+    CGDataProviderRelease(imageDataProvider);
+    if (image == NULL) {
+        fprintf(stderr, "Couldn't create CGImageRef fot this data! \n");
+        return;
+    }
+    
+    imageRect = CGRectMake(0., 0., width, height);
+    // Draw the image.
+    CGContextDrawImage(ctx, imageRect, image);
+    // Release the image
+    CGImageRelease(image);
+}
 
 
-
-
-
+CGColorSpaceRef getCalibratedRGBColorSpace(void){
+    static CGColorSpaceRef colorspace = NULL;
+    
+    if (colorspace == NULL) {
+        colorspace = CGColorSpaceCreateDeviceRGB();
+    }
+    
+    return colorspace;
+}
 
 
 

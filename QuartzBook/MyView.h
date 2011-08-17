@@ -6,7 +6,7 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-
+void drawSampleJPEGImage(CGContextRef ctx);
 
 @interface MyView : NSView {
     

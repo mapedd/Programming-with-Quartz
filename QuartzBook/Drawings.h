@@ -150,3 +150,13 @@ size_t myCFDataConsumerPutBytes(void *info, const void* buffer, size_t count);
 void myCFDataConsumerRelease(void *info);
 
 CGDataConsumerRef myCGDataConsumerCreateWithCFData(CFMutableDataRef data);
+
+//9.1
+void drawJPEGImage(CGContextRef ctx, CFURLRef url);
+
+//9.2
+void drawImageFromURL(CGContextRef ctx, CFURLRef url, size_t width, size_t height, size_t bitsPerComponent, Boolean isRGB);
+
+void doColorRampImage(CGContextRef ctx);
+
+CGColorSpaceRef getCalibratedRGBColorSpace(void);
