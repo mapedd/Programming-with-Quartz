@@ -1221,7 +1221,7 @@ void drawImageFromURL(CGContextRef ctx, CFURLRef url, size_t width, size_t heigh
 }
 
 
-
+//9.3
 void doColorRampImage(CGContextRef ctx){
     CGImageRef image = NULL;
     CGRect imageRect;
@@ -1275,8 +1275,424 @@ CGColorSpaceRef getCalibratedRGBColorSpace(void){
     return colorspace;
 }
 
+//9.4
+void doGrayRamp(CGContextRef ctx){
+    CGImageRef image = NULL;
+    CGRect imageRect;
+    
+    size_t width = 256, height = 1;
+    size_t bitsPerComponent = 8, bitsPerPixel = 8;
+    size_t bytesPerRow = width;
+    bool shouldInterpolate = true;
+    CGColorSpaceRef colorspace = NULL;
+    CGDataProviderRef dataProvider = NULL;
+    
+    dataProvider = createGrayRampDirectAccessDP();
+    if (dataProvider == NULL) {
+        fprintf(stderr, "Couldn't create Gray Ramp provider! \n");
+        return;
+    }
+    colorspace = getCalibratedGrayColorSpace();
+    image = CGImageCreate(width,
+                          height,
+                          bitsPerComponent,
+                          bitsPerPixel,
+                          bytesPerRow,
+                          colorspace,
+                          kCGImageAlphaNone,
+                          dataProvider,
+                          NULL,
+                          shouldInterpolate,
+                          kCGRenderingIntentDefault);
+    CGDataProviderRelease(dataProvider);
+    if (image == NULL) {
+        fprintf(stderr, "Couldn't create CGImageRef for image data! \n");
+        return;
+    }
+    
+    imageRect = CGRectMake(0., 0., 256., 256.);
+    // Drawing the image that is 256 samples wide and 1 scanline high 
+    // into a rectangle that is 256 x 256 units on a side causes Quartz to stretch the image
+    // to fill the destination rectangle
+    CGContextDrawImage(ctx, imageRect, image);
+    CGImageRelease(image);
+}
 
+CGColorSpaceRef getCalibratedGrayColorSpace(void){
+    static CGColorSpaceRef graycolorspace = NULL;
+    
+    if (graycolorspace == NULL) {
+        graycolorspace = CGColorSpaceCreateDeviceGray();
+    }
+    
+    return graycolorspace;
+}
 
+//9.5
+CGImageRef myCreateImageUsingImageSource(CFURLRef url, float* xdpiP, float* ydpiP){
+    CGImageRef image = NULL;
+    CGImageSourceRef imageSource = NULL;
+    CFDictionaryRef properties = NULL;
+    CFNumberRef val;
+    
+    // Set to zero, indicating the property was unavailable.
+    *xdpiP = *ydpiP = 0.;
+    
+    // Create the image source from the URL.
+    imageSource = CGImageSourceCreateWithURL(url, NULL);
+    if (imageSource == NULL) {
+        fprintf(stderr, "Couldn't create image source from URL! \n");
+        return NULL;
+    }
+    
+    // Obtain the properties dictionary for the first image in the image source
+    // This is a copy function so this code owns the reference returned.
+    properties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, NULL);
+    if (properties != NULL) {
+        // Check for the x and y resolution of the image.
+        val = CFDictionaryGetValue(properties, kCGImagePropertyDPIWidth);
+        if (val != NULL) {
+            CFNumberGetValue(val, kCFNumberFloatType, xdpiP);
+        }
 
+        val = CFDictionaryGetValue(properties, kCGImagePropertyDPIHeight);
+        if (val != NULL) {
+            CFNumberGetValue(val, kCFNumberFloatType, ydpiP);
+        }
+        
+        CFRelease(properties);
+    }
+    
+    // Create a CGImageRef from the first image in the CGImageSource
+    image = CGImageSourceCreateImageAtIndex(imageSource, 0, NULL);
+    // Release the CGImageSource object since it is no longer needed and this code created it.
+    // This code uses CFRelease since a CGImageSource object is a Core Foundation object.
+    CFRelease(imageSource);
+    
+    if (image == NULL) {
+        fprintf(stderr, "Couldn't create image from image source! \n");
+        return NULL;
+    }
+    
+    return image;
+}
 
+//9.6
+CGImageRef myCreateThumbnailFromImageSource(CFURLRef url){
+    CGImageRef thumb = NULL;
+    CGImageSourceRef imageSource = NULL;
+    int maxThumbSize = 160;
+    CFNumberRef maxThumbSizeRef;
+    CFStringRef keys[2];
+    CFTypeRef values[2];
+    CFDictionaryRef options = NULL;
+    
+    // Create the image source from the URL.
+    imageSource = CGImageSourceCreateWithURL(url, NULL);
+    if (imageSource == NULL) {
+        fprintf(stderr, "Couldn't create image source from URL! \n");
+        return NULL;
+    }
+    
+    // Specify the maximum size of the thumbnail for 
+    // Quartz to create as 160 pixels in width and height.
+    maxThumbSizeRef = CFNumberCreate(NULL, kCFNumberIntType, &maxThumbSize);
+    
+    // Request that Quartz create a thumbnail image if thumbnail data isn't present in the file.
+    keys[0] = kCGImageSourceCreateThumbnailFromImageIfAbsent;
+    values[0] = (CFTypeRef)kCFBooleanTrue;
+    
+    // Reqest that the maximum size of the thumbnail is that specified by maxThumbSizeRef, 160 pixels.
+    keys[1] = kCGImageSourceThumbnailMaxPixelSize;
+    values[1] = (CFTypeRef)maxThumbSizeRef;
+    
+    // Create an options dictionary with these keys.
+    options = CFDictionaryCreate(NULL,
+                                 (const void **)keys,
+                                 (const void **)values,
+                                 2,
+                                 &kCFTypeDictionaryKeyCallBacks,
+                                 &kCFTypeDictionaryValueCallBacks);
+    
+    // Release the CFNumber this code created.
+    CFRelease(maxThumbSizeRef);
+    
+    // Create the thumbnail image for the first  image in the image source, that at index 0, 
+    // using the options dictionary that the code just created.
+    thumb = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, options);
+    
+    // Release the options dictionary
+    CFRelease(options);
+    // Release the image source the code created.
+    CFRelease(imageSource);
+    
+    if (thumb == NULL) {
+        fprintf(stderr, "Couldn't create thumbnail from image source! \n");
+        return NULL;
+    }
+        
+    return thumb;
+}
 
+//9.8
+
+CFDataRef myCreateAccumulatedDataSoFar(MyIncrementalData* data, bool done){
+    CFDataRef accuData = NULL;
+        //missing implementation
+    return accuData;
+}
+
+static void MyDrawIncrementalImage(CGContextRef ctx, CGImageRef image, float fullHeight){
+    // Obtain the width and height of the image that has been accimulated so far.
+    float width = CGImageGetWidth(image);
+    float height = CGImageGetHeight(image);
+    // Adjust the location of the imageRect so that the origin is such that
+    // the full image would be located at (0,0) and the partial image 
+    // top-left corner does not move as the image is filled in.
+    CGRect imageRect = CGRectMake(0., fullHeight-height, width, height);
+    CGContextDrawImage(ctx, imageRect, image);
+}
+
+static void myDrawFirstImageIncrementally(CGContextRef ctx, MyIncrementalData *myDataP){
+    bool done;
+    float height = -1.0f;
+    CGRect imageRect;
+    CGImageSourceStatus status;
+    
+    // Create an incremental image source.
+    CGImageSourceRef imageSource = CGImageSourceCreateIncremental(NULL);
+    if (imageSource == NULL) {
+        fprintf(stderr, "Couldn't create incremental image source! \n");
+        return;
+    }
+    
+    // Loop, gathering the necessary data to find the true heught of the image and draw it.
+    do {
+        // Accumulate the data.
+        CFDataRef data = myCreateAccumulatedDataSoFar(myDataP, &done);
+        CGImageSourceUpdateData(imageSource, data, done);
+        // Release the data since Quartz retains and this code no longer needs it
+        CFRelease(data);
+        
+        if (height <0) {
+            // Determine the height of the full image at index 0.
+            CFDictionaryRef properties  = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, NULL);
+            if (properties) {
+                CFTypeRef val = CFDictionaryGetValue(properties, kCGImagePropertyPixelHeight);
+                if (val != NULL) 
+                    CFNumberGetValue(val, kCFNumberFloatType, &height);
+                CFRelease(properties);
+            }
+        }
+        
+        // Once the height is obtained, go ahead and see if Quartz has enough data to create CGImage object.
+        if (height > 0) {
+            // Now create the CGImageRef from the image source for the first image.
+            CGImageRef image = CGImageSourceCreateImageAtIndex(imageSource, 0, NULL);
+            if (image){
+                // Draw the image using the height of the full image to adjust 
+                // the location where the partial image is drawn.
+                MyDrawIncrementalImage(ctx, image, height);
+                CGImageRelease(image);
+                // Potentially you would wnat to flush the context so that the drawing
+                // to a window would appear, even inside this loop.
+                // See chapter 17 for more information about flushing.
+                CGContextFlush(ctx);
+            }
+        }
+        
+        // Obtain the status for the image source for the first image.
+        status = CGImageSourceGetStatus(imageSource);
+        
+        // Continue the loop until either all data has loaded or the status of the first image is complete.
+    } while (!done && status != kCGImageStatusComplete);
+    
+    CFRelease(imageSource);
+}
+
+//9.9
+CFDictionaryRef createFloatingPointImageOptions(CGImageSourceRef imageSource){
+    CFDictionaryRef properties, options = NULL;
+    Boolean isFloat = false;
+    CFTypeRef keys[1];
+    CFTypeRef values[1];
+    // Allow the image to be a floating-point image. Without this,
+    // Quartz returns integer pixel data even, for floating-point images.
+    keys[0] = kCGImageSourceShouldAllowFloat;
+    values[0] = kCFBooleanTrue;
+    
+    options = CFDictionaryCreate(NULL,
+                                 keys,
+                                 values,
+                                 1,
+                                 &kCFTypeDictionaryKeyCallBacks,
+                                 &kCFTypeDictionaryValueCallBacks);
+    // Obtain the properties for the first image in the image source. 
+    // This is a 'Copy' function, so the code owns a reference to the dictionary returned.
+    properties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, options);
+    
+    if (properties == NULL) {
+        CFTypeRef value;
+        // Get the value for kCGImagePropertyIsFloat if it exists
+        // and if the value is a CFBoolean, the get the corresponing Boolean result
+        
+        if (CFDictionaryGetValueIfPresent(properties,kCGImagePropertyIsFloat,&value) 
+            && CFGetTypeID(value) == CFBooleanGetTypeID()) {
+            isFloat = CFBooleanGetValue(value);
+        }
+        
+        CFRelease(properties);
+    }
+    
+    if (!isFloat) {
+        // Release the options dictionary if the image isn't
+        // a floating-point image, otherwise return it.
+        CFRelease(options);
+        options = NULL;
+    }
+    
+    return options;
+}
+
+//9.10 - Apparently not working in Lion
+/*
+static CGImageRef createCGImageWithQuickTimeFromURL(CFURLRef url){
+    OSStatus err = noErr;
+    CGImageRef imagerRef = NULL;
+    Handle dataRef = NULL;
+    OSType dataRefType;
+    GraphicsImportComponent gi;
+    ComponentResult result;
+    
+    result = QTNewDataReferenceFromCFURL(url, 0, &dataRef, &dataRefType);
+    if (NULL != dataRef) {
+        err = GetGraphicsImporterForDataRefWithFlags(dataRef, dataRefType, &gi,0);
+    
+        if (!err && gi) {
+            // Tell the graphics importer that it shouldn't perform
+            // gamma correctionoand it should be create an image in
+            // the original source color space rather than matching it to
+            // a generic calibrated color space.
+            result = GraphicsImportSetFlags(gi,(kGraphicsImporterDontDoGammaCorrection+kGraphicsImporterDontUseColorMatching));
+            
+            if (!result) 
+                result = GraphicsImportCreateCGImage(gi,&imageRef,0);
+            if (result) 
+                fprintf(stderr, "Got a bad result = %d!",(int)reslut);
+            DisposeHandle(dataRef);
+            CloseComponent(gi);
+        }
+
+    }
+    return imagerRef;
+}*/
+
+//9.11
+bool imageHasFloatingPointSamples(CGImageRef image){
+    if (&CGImageGetBitmapInfo!=NULL) {
+        return (kCGBitmapFloatComponents & CGImageGetBitmapInfo(image));
+    }
+    return false;
+}
+
+//9.12
+
+CGColorSpaceRef getTheCalibratedRGBColorSpace(void){
+    CGColorSpaceRef colorSpace = NULL;
+    
+    return colorSpace;
+}
+
+CGColorSpaceRef getTheSRGBColorSpace(void){
+    CGColorSpaceRef colorSpace = NULL;
+    
+    return colorSpace;
+}
+
+void drawJPEGDocumentWithMultipleProfiles(CGContextRef context, CFURLRef url){
+    CGImageRef jpgImage = NULL, updatedImage1 = NULL, updatedImage2 = NULL;
+    Boolean isDeviceRGBImage = false;
+    CGColorSpaceRef originalColorSpace = NULL;
+    CGColorSpaceRef comparisonColorSpace = NULL;
+    CGRect imageRect;
+    // Create a Quartz data provider for the supplied URL.
+    CGDataProviderRef jpgProvider = CGDataProviderCreateWithURL(url);
+    if (jpgProvider == NULL) {
+        fprintf(stderr, "Couldn't create JPEG Data provider!\n");
+        return;
+    }
+    
+    
+    //Create the CGImageRef for the JPEG image from the data provider.
+    jpgImage = CGImageCreateWithJPEGDataProvider(jpgProvider, NULL, true, kCGRenderingIntentDefault);
+    CGDataProviderRelease(jpgProvider);
+    if (jpgImage == NULL) {
+        fprintf(stderr, "Couldn't create CGImageRef fot the JPEG data!\n");
+        return;
+    }
+    
+    // Get the color space characterizing the image. This is a 
+    // 'Get' function so the code doesn't own the reference
+    // to the color space returned and must not release it.
+    originalColorSpace = CGImageGetColorSpace(jpgImage);
+    if (originalColorSpace == NULL) {
+        fprintf(stderr, "Image is a masking image, not an image with intristic color!\n");
+        return;
+    }
+    
+    if (CGColorSpaceGetNumberOfComponents(originalColorSpace) != 3) {
+        fprintf(stderr, "This example only works with three-component JPEG images!\n");
+        return;
+    }
+    
+    // Determine if the original color space is DeviceRGB. If that is
+    // not the case, then return.
+    comparisonColorSpace = CGColorSpaceCreateDeviceRGB();
+    
+    // Note that this comparison of color spaces works only on 
+    // Jaguar and later versions where CGColorSpaceRef is a 
+    // Core Foundation object. Otherwise this will crash!
+    
+    isDeviceRGBImage = CFEqual(comparisonColorSpace, originalColorSpace);
+    // This code created 'comparisonColorSpace' so it must release it.
+    CGColorSpaceRelease(comparisonColorSpace);
+    if (!isDeviceRGBImage) {
+        fprintf(stderr, "The color space for the JPEG image is not DeviceRGB!\n");
+        return;
+    }
+    
+    imageRect = CGRectMake(0., CGImageGetHeight(jpgImage)/2, CGImageGetWidth(jpgImage), CGImageGetHeight(jpgImage));
+    // Draw the original image to the left of the other two.
+    CGContextDrawImage(context, imageRect, jpgImage);
+    // Recharacterize the original image with the generic Calibrated RGB
+    // color space.
+    
+    updatedImage1 = CGImageCreateCopyWithColorSpace(jpgImage, getTheCalibratedRGBColorSpace());
+    // Release the original image since this code is done with it.
+    CGImageRelease(jpgImage);
+    if (updatedImage1 == NULL) {
+        fprintf(stderr, "There is no updated image to draw!\n");
+        return;
+    }
+    
+    // Draw the image characterized by the Generic profile 
+    // to the right of the other image.
+    imageRect = CGRectOffset(imageRect, CGRectGetWidth(imageRect)+10, 0);
+    CGContextDrawImage(context, imageRect, updatedImage1);
+    
+    // Recharacterize the but but now wht color space created by the sRGB profile.
+    updatedImage2 = CGImageCreateCopyWithColorSpace(updatedImage1, getTheSRGBColorSpace());
+    // Release updatedImage1 since this code is done with it/
+    CGImageRelease(updatedImage1);
+    if (updatedImage2 == NULL) {
+        fprintf(stderr, "There is no second updated image to draw!\n");
+        return;
+    }
+    
+    // Draw the image characterized by the sRGB profile to the right of
+    // the image characterized by the generic RGB profile.
+    imageRect = CGRectOffset(imageRect, CGRectGetWidth(imageRect)+10, 0);
+    CGContextDrawImage(context, imageRect, updatedImage2);
+    CGImageRelease(updatedImage2);
+    
+}

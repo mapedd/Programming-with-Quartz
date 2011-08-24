@@ -17,6 +17,7 @@
 		0499E4FE135E0D5C0002C36B /* MyView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0499E4FD135E0D5C0002C36B /* MyView.m */; };
 		0499E503135E11F50002C36B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0499E502135E11F50002C36B /* QuartzCore.framework */; };
 		0499E506135E14EE0002C36B /* Drawings.c in Sources */ = {isa = PBXBuildFile; fileRef = 0499E504135E14EE0002C36B /* Drawings.c */; };
+		04E8E1C91405630500B6BC92 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04E8E1C81405630500B6BC92 /* QTKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,7 @@
 		0499E502135E11F50002C36B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		0499E504135E14EE0002C36B /* Drawings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Drawings.c; sourceTree = "<group>"; };
 		0499E505135E14EE0002C36B /* Drawings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Drawings.h; sourceTree = "<group>"; };
+		04E8E1C81405630500B6BC92 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,6 +50,7 @@
 			files = (
 				0499E4E0135E0CE70002C36B /* Cocoa.framework in Frameworks */,
 				0499E503135E11F50002C36B /* QuartzCore.framework in Frameworks */,
+				04E8E1C91405630500B6BC92 /* QTKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +86,7 @@
 		0499E4E1135E0CE70002C36B /* Other Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				04E8E1C81405630500B6BC92 /* QTKit.framework */,
 				0499E502135E11F50002C36B /* QuartzCore.framework */,
 				0499E4E2135E0CE70002C36B /* AppKit.framework */,
 				0499E4E3135E0CE70002C36B /* CoreData.framework */,

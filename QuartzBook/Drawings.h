@@ -7,6 +7,7 @@
 //
 
 #import <QuartzCore/QuartzCore.h>
+#import <QuickTime/QuickTime.h>
 
 // The full path to the generic RGB ICC progile.
 
@@ -157,6 +158,49 @@ void drawJPEGImage(CGContextRef ctx, CFURLRef url);
 //9.2
 void drawImageFromURL(CGContextRef ctx, CFURLRef url, size_t width, size_t height, size_t bitsPerComponent, Boolean isRGB);
 
+//9.3
 void doColorRampImage(CGContextRef ctx);
 
 CGColorSpaceRef getCalibratedRGBColorSpace(void);
+
+//9.4
+void doGrayRamp(CGContextRef ctx);
+
+CGColorSpaceRef getCalibratedGrayColorSpace(void);
+
+//9.5
+CGImageRef myCreateImageUsingImageSource(CFURLRef url, float* xdpiP, float* ydpiP);
+
+//9.6
+CGImageRef myCreateThumbnailFromImageSource(CFURLRef url);
+
+//9.8
+
+// This is wrong
+typedef void* MyIncrementalData;
+// Missing implementation of this function
+CFDataRef myCreateAccumulatedDataSoFar(MyIncrementalData* data, bool done);
+
+static void MyDrawIncrementalImage(CGContextRef ctx, CGImageRef image, float fullHeight);
+
+static void myDrawFirstImageIncrementally(CGContextRef ctx, MyIncrementalData *myDataP);
+
+//9.9
+CFDictionaryRef createFloatingPointImageOptions(CGImageSourceRef imageSource);
+
+//9.10 - Apparently not working in Lion
+/*
+static CGImageRef createCGImageWithQuickTimeFromURL(CFURLRef url);
+ */
+
+//9.11
+bool imageHasFloatingPointSamples(CGImageRef image);
+
+//9.12
+
+CGColorSpaceRef getTheCalibratedRGBColorSpace(void);
+
+CGColorSpaceRef getTheSRGBColorSpace(void);
+
+void drawJPEGDocumentWithMultipleProfiles(CGContextRef context, CFURLRef url);
+
