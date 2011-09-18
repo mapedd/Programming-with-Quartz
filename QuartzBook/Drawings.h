@@ -204,3 +204,46 @@ CGColorSpaceRef getTheSRGBColorSpace(void);
 
 void drawJPEGDocumentWithMultipleProfiles(CGContextRef context, CFURLRef url);
 
+//9.13 
+static void rgbRampSubDataRelease(void *info, const void *data, size_t size);
+
+static unsigned char * createRedGreenRampImageData(size_t width, size_t height, size_t size);
+
+static CGDataProviderRef createRGBRampSubDataProvider(CGRect subRect);
+
+void doColorRampSubImage(CGContextRef context);
+
+//9.14 
+void exportCGImageToPNGFileWithDestination(CGImageRef image, CFURLRef url);
+
+//9.15 Apparently not working in Lion
+/*
+void exportCGImageToJPEGFile(CGImageRef image, CFURLRef url){
+    Handle                  dataRef = NULL;
+    OSType                  dataRefType;
+    GraphicsExportComponent graphicsExporter;
+    unsinged long           sizeWritten;
+    ComponentResult         result;
+    result = QTNewDataReferenceFromCFURL(url, 0, &dataRef, &dataRefType);
+    if(!result){
+        result = OpenADefaultComponent(GraphicsExporterComponentType, kQTFileTypeJPEG, &graphicsExporter);
+        if (!result) {
+            result = GraphicsExportSetInputCGImage(graphicsExporter, imageRef);
+            if(!result){
+                result = GraphicsExportSetOutputDataReference(graphicsExporter, dataRef, dataRefType);
+                if(!result)
+                    result = GraphicsExportDoExport(graphicsExporter, &sizeWritten);
+                CloseComponent(graphicsExporter);
+            }
+        }
+    }
+    
+    if(dataRef)
+        DisposeHandle(dataRef);
+    if(result)
+        fprintf(stderr, "Bad result = %d!\n", (int)result);
+    return;
+}
+*/
+
+

@@ -31,7 +31,7 @@
     CGContextRef context = (CGContextRef)[currentContext graphicsPort]; 
 
     
-    doGrayRamp(context);
+    doColorRampSubImage(context);
 
     
     

@@ -1696,3 +1696,200 @@ void drawJPEGDocumentWithMultipleProfiles(CGContextRef context, CFURLRef url){
     CGImageRelease(updatedImage2);
     
 }
+
+
+//9.13 
+static void rgbRampSubDataRelease(void *info, const void *data, size_t size){
+    free((char *)info);
+}
+
+static unsigned char * createRedGreenRampImageData(size_t width, size_t height, size_t size){
+    unsigned char *p;
+    unsigned char *dataP = (unsigned char *)malloc(size);
+    
+    if (dataP == NULL)
+        return NULL;
+    
+    p = dataP;
+    // Build an image that is RGB 24 bits per sample. This is a ramp
+    // where the red component value increases in red from left to
+    // right and the green component increases from top to bottom.
+    int r,g;
+    for (g=0; g<height; g++) {
+        for (r=0; r<width; r++) {
+            *p++=r; *p++=g; *p++ = 0;
+        }
+    }
+    
+    return dataP;
+}
+
+static CGDataProviderRef createRGBRampSubDataProvider(CGRect subRect){
+    CGDataProviderRef dataProvider = NULL;
+    size_t bytesPerSample = 3;
+    size_t width = 256, height = 256;
+    size_t bytesPerRow = width*bytesPerSample;
+    size_t startOffsetX = subRect.origin.x;
+    size_t startOffsetY = subRect.origin.y;
+    size_t imageDataSize = bytesPerRow*height;
+    
+    // The first image sample is at
+    // (startOffsetY*bytesPerRow + startOffsetX&bytesPerSample)
+    // bytes intro the RGB ramp data.
+    
+    size_t firstByteOffset = (startOffsetY*bytesPerRow + startOffsetX&bytesPerSample);
+    // The actual size of the image data provided is the full image size
+    // minus the amount skipped at the beginning. This is more that the
+    // total amount od data that is needed for the subimage, but it is 
+    // valid and easy to calculate.
+    size_t totalBytesProvided = imageDataSize-firstByteOffset;
+    // Create the full color ramp.
+    unsigned char *dataP = createRedGreenRampImageData(width, height, imageDataSize);
+
+    if (dataP == NULL) {
+        fprintf(stderr, "Couldn't create image data!\n");
+        return NULL;
+    }
+    
+    // Use the pointer to the first byte as the info parameter since
+    // that is the pointer to the block to free when done
+    dataProvider = CGDataProviderCreateWithData(dataP, dataP+firstByteOffset, totalBytesProvided, rgbRampSubDataRelease);
+    
+    if (dataProvider == NULL) {
+        free(dataP);
+        return NULL;
+    }
+    
+    return dataProvider;
+}
+
+void doColorRampSubImage(CGContextRef context){
+    CGImageRef image = NULL;
+    CGRect imageSubRect, rect;
+    // Start 4 scanlines from the top and 16 pixels from the left edge;
+    // skip the last 40 scanlines of the image and the rightmost
+    // 64 pixels.
+    size_t insetLeft = 16, insetTop = 4, insetRight = 64, insetBottom = 40;
+    
+    size_t fullImageWidth = 256, fullImageHeight = 256;
+    size_t subImageWidth = fullImageWidth-insetLeft-insetRight;
+    size_t subImageHeight = fullImageHeight-insetTop-insetBottom;
+    size_t bitsPerComponent = 8, bitsPerPixel = 24;
+    size_t bytesPerRow = fullImageWidth*3;
+    bool shouldInterpolate = true;
+    CGColorSpaceRef colorspace = NULL;
+    CGDataProviderRef imageDataProvider = NULL;
+    imageSubRect = CGRectMake(insetLeft, insetTop,subImageWidth, subImageHeight);
+    colorspace = getCalibratedRGBColorSpace();
+    if (&CGImageCreateWithImageInRect != NULL) {
+        CGImageRef fullImage = NULL;
+        imageDataProvider = createRGBRampDataProvider();
+        if (imageDataProvider == NULL) {
+            fprintf(stderr, "Couldn't create Image Data provider!\n");
+            return;
+        }
+        fullImage = CGImageCreate(fullImageWidth,
+                                  fullImageHeight,
+                                  bitsPerComponent,
+                                  bitsPerPixel,
+                                  bytesPerRow,
+                                  colorspace,
+                                  kCGImageAlphaNone,
+                                  imageDataProvider,
+                                  NULL,
+                                  shouldInterpolate,
+                                  kCGRenderingIntentDefault);
+        if (fullImage) {
+            image = CGImageCreateWithImageInRect(fullImage, imageSubRect);
+            CGImageRelease(fullImage);
+        }
+    }
+    
+    // If the image hasn't been created yet, this uses the customized data provider to do so.
+    if (image == NULL) {
+        imageDataProvider = createRGBRampSubDataProvider(imageSubRect);
+        if (imageDataProvider == NULL) {
+            fprintf(stderr, "Couldn't create Image Data provider!\n");
+            return;
+        }
+        
+        // By supplying bytesPerRow, the extra data at the end of 
+        // each scanline and the beginning of the next is properly skipped.
+        image = CGImageCreate(subImageWidth,
+                              subImageHeight,
+                              bitsPerComponent,
+                              bitsPerPixel,
+                              bytesPerRow,
+                              colorspace,
+                              kCGImageAlphaNone,
+                              imageDataProvider,
+                              NULL,
+                              shouldInterpolate,
+                              kCGRenderingIntentDefault);
+    }
+    
+    // This code no longer needs the data provider.
+    CGDataProviderRelease(imageDataProvider);
+    if (image == NULL) {
+        fprintf(stderr, "Couldn't create CGImageRef for this data!\n");
+        return;
+    }
+    
+    // Draw the subimage
+    rect = CGRectMake(0., 0., subImageWidth, subImageHeight);
+    CGContextDrawImage(context, rect, image);
+    CGImageRelease(image);
+}
+
+
+//9.14 
+void exportCGImageToPNGFileWithDestination(CGImageRef image, CFURLRef url){
+    float resolution = 144.;
+    CFTypeRef keys[2];
+    CFTypeRef values[2];
+    CFDictionaryRef options = NULL;
+    
+    //Create an image destination at the supplied URL that corresponds to the PNG image format.
+    CGImageDestinationRef imageDestination = CGImageDestinationCreateWithURL(url, kUTTypePNG, 1, NULL);
+    
+    if (imageDestination == NULL) {
+        fprintf(stderr, "Couldn't create image destination!\n");
+        return;
+    }
+    
+    // Set the keys to be x and y resolution of the image.
+    keys[0] = kCGImagePropertyDPIWidth;
+    keys[1] = kCGImagePropertyDPIHeight;
+    
+    // Create a CFNumber for the resolution and is it as the x and y resolution
+    values[0] = CFNumberCreate(NULL, kCFNumberFloatType, &resolution);
+    values[1] = values[0];
+    
+    // Create an options dictionary with these keys.
+    options = CFDictionaryCreate(NULL,
+                                 (const void **)keys,
+                                 (const void **)values,
+                                 2,
+                                 &kCFTypeDictionaryKeyCallBacks,
+                                 &kCFTypeDictionaryValueCallBacks);
+    
+    // Release the CFNumber the code created.
+    CFRelease(values[0]);
+    
+    // Add the image with options dictionary to the destination.
+    CGImageDestinationAddImage(imageDestination, image, options);
+    
+    // Release the options dictionary this code created.
+    CFRelease(options);
+    
+    // When all images are added to the destination, finalize it.
+    CGImageDestinationFinalize(imageDestination);
+    
+    // Release the destination when done with it.
+    CFRelease(imageDestination);
+}
+
+//9.15
+void exportCGImageToJPEGFile(CGImageRef image, CFURLRef url);
+
+
