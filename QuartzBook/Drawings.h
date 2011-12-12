@@ -246,4 +246,20 @@ void exportCGImageToJPEGFile(CGImageRef image, CFURLRef url){
 }
 */
 
+//10.1
+
+static const unsigned char *getMaskData1();
+
+static const unsigned char *getMaskData2();
+
+void doOneBitMaskImages(CGContextRef context);
+
+
+
+
+
+
+
+
+
 

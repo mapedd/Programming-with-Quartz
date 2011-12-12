@@ -31,9 +31,9 @@
     CGContextRef context = (CGContextRef)[currentContext graphicsPort]; 
 
     
-    doColorRampSubImage(context);
+//    doColorRampSubImage(context);
 
-    
+    doOneBitMaskImages(context)  ;
     
 }
 
